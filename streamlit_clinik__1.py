@@ -102,7 +102,8 @@ if st.button('Записать пациента'):
     data_transformed = preprocessor.transform(data)
     predictions = model.predict(data_transformed)
     prediction = predictions[0][0]
-    st.write(f'Вероятность посещения пациента - {np.round(prediction, 2)} %')
+    rounded_prediction = np.round(prediction, 4)
+    st.write(f'Вероятность посещения пациента - {rounded_prediction*100} %')
 
 
 if st.button('Показать аналитику по данным'):
