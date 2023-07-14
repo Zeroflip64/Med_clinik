@@ -3,7 +3,7 @@ numpy
 python-dateutil
 seaborn
 matplotlib
-scikit-learn==0.24
+scikit-learn
 plotly
 imbalanced-learn
 tensorflow
