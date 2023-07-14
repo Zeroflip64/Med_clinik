@@ -70,16 +70,55 @@ if st.button('Сформировать датафрейм'):
     data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
     data = ready_data(data)
     
-preprocessor = joblib.load('preprocessor.pkl')
 
 df=pd.read_csv('KaggleV2-May-2016.csv')
 
-
+@st.cache_data()
+def prepocessor(data):
+    df=pd.read_csv('KaggleV2-May-2016.csv')
+    df['Gender']=np.where(df['Gender']=='M',1,0)
+    df['No-show']=np.where(df['No-show']=='Yes',1,0)
+    df['AppointmentDay']=pd.to_datetime(df['AppointmentDay'], format="%Y-%m-%dT%H:%M:%SZ")
+    df['ScheduledDay']=pd.to_datetime(df['ScheduledDay'], format="%Y-%m-%dT%H:%M:%SZ")
+    x=pd.DataFrame(df['PatientId'].value_counts())
+    bins=np.linspace(1,8,9)
+    x['bins']=np.digitize(x,bins=bins)
+    x['first_come']=np.where(x['PatientId']>1,0,1)
+    
+    df=df.set_index('PatientId')
+    #df['Pacient_group']=x['bins']
+    df['first_come']=x['first_come']
+    df=df.reset_index(drop=True)
+    df=df.drop(['AppointmentID'],axis=1)
+    df['Day_scheduled']=df['ScheduledDay'].dt.weekday
+    df['Day_Appointment']=df['AppointmentDay'].dt.weekday
+    df['Hours_Scheduled']=df['ScheduledDay'].dt.hour
+    df['Day_Appointment']=df['Day_Appointment'].apply(lambda x: x+1)
+    df['Diff']=df['AppointmentDay']-df['ScheduledDay']
+    df['Diff']=df['Diff'].dt.days
+    df=df.loc[(df['Age']>=0)&(df['Age']<95)]
+    df['Diff'] = df['Diff'].apply(lambda x: x if x >= 0 else (x if x != -1 else x * 0))
+    df=df.loc[df['Diff']>=0]
+    df['Hipertension & Diabetes']=df['Diabetes']*df['Hipertension']
+    df=df.drop(['Hipertension','Diabetes'],axis=1)
+    df=df.loc[df['Diff']<30]
+    preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', MinMaxScaler(), ['Age', 'Diff']),
+        
+        ('ord', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
+    ],
+        remainder='passthrough')
+    df = df.loc[~df['Neighbourhood'].isin(['ILHAS OCEÂNICAS DE TRINDADE', 'PARQUE INDUSTRIAL'])]
+    target=df['No-show']
+    features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
+    features_train=preprocessor.fit_transform(features)
+    return preprocessor.transform(data)
 
 
 
 st.write(data)
-data = preprocessor.transform(data)
+data = prepocessor(data)
 # модель
 st.write(data)
 model = Sequential()
