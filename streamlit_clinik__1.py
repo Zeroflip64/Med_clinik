@@ -105,194 +105,194 @@ if st.button('Записать пациента'):
     st.write(f'Вероятность посещения пациента - {np.round(prediction, 2)} %')
 
 
-
-st.header('Часть 2')
-st.subheader('Аналитика по данным по которым проходило обучение и выявление клиента который более склонен не посещать запись')
-st.write('Для подготовки модели были взяты данные сторонней клиники')
-
-
-fig, ax = plt.subplots()
-ax.hist(df['No-show'], bins='auto')
-plt.title('Распределение целевого признака')
-# Отобразите гистограмму в Streamlit
-st.pyplot(fig)
-st.text('В данных сильный дисбаланс целевого показателя')
-
-fig, ax = plt.subplots()
-ax.hist(df['Diff'], bins='auto')
-st.pyplot(fig)
-plt.title('Разница между записью и посещением больницы');
-plt.xlabel('Количество дней');
-
-st.write('Построим матрицу кореляции для признаков наших данных')
-st.write('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
-
-# Define columns
-col1, col2 = st.columns((0.7, 0.3))
-
-# Draw the plot in the first column
-with col1:
-    fig, ax = plt.subplots(figsize=(16,10))
-    sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay','Neighbourhood']]].corr(), annot=True, ax=ax)
-    ax.set_title('Матрица кореляции признаков')
+if st.button('Показать аналитику по данным'):
+    st.header('Часть 2')
+    st.subheader('Аналитика по данным по которым проходило обучение и выявление клиента который более склонен не посещать запись')
+    st.write('Для подготовки модели были взяты данные сторонней клиники')
+    
+    
+    fig, ax = plt.subplots()
+    ax.hist(df['No-show'], bins='auto')
+    plt.title('Распределение целевого признака')
+    # Отобразите гистограмму в Streamlit
     st.pyplot(fig)
-
-# Write the text in the second column
-with col2:
-    st.write('Вывод : нас интересует признак No_show он отвечает за появление пациента он положительо корелирует с двумя данными признаками - Разница межу датами записи и приема и sms оповещением')
-st.subheader('Построим признаки для выявления груп которые чаще не приходят по записи')
-
-columns_to_exclude = ['AppointmentDay','ScheduledDay','PatientId','No-show']
-output_text = {
-    'Gender': 'Мы не видим ильных различий между посещением и пропусками в зависимости от пола',
-    'Age': 'Мы можем увидеть, что более молодые люди склонны к пропускам записи, основной возраст до 18 лет. Другая группа людей от 18 до 30 также превышает медианное значение, и мы видим, что чем старше пациенты становятся, тем меньше у них пропусков. Все группы, которые превышают порог, можно посмотреть в колонке Age 2.1.',
-    'Neighbourhood': 'Выявлены три района, у которых больше всего пропусков. С остальными районами можно ознакомиться в следующем графике.',
-    'Scholarship': 'Мы видим, что люди с медицинской страховкой чаще пропускают приемы.',
-    'Handcap':'Люди с 3 и 4 группой инвалидности так же склоны к пропускам записи',
-    'SMS_received':'Значительно превышает процент пропусков у людей которые получают смс оповещения',
-    'first_come':'Люди которые впервые бывают в поликлинике чаще не приходят по записи',
-    'Day_Appointment':'Люди которые записанны на пятницу или субботу чаще пропускают запись',
-    'Hours_Scheduled':'Обычно люди которые записываються по 20.00 пропускают запись ,со всеми часами можно ознакомиться в таблице ниже',
-    'Diff':'Если люди записываються за две недели они попадают в группу риска ну и чем позже тем риск становиться больше',
-    'Alcoholism':'Каждая группа не превысила порог .',
-    'Day_scheduled': 'Люди которые совершали запись в пятницу меньше всех не приходят по записи.',
-    'Hipertension & Diabetes':'Люди без хранических заболеваний чаще пропускают приемы,но это сильно корелирует с возрастом пациентов'
-
-}
-
-plot_check = {}
-
-for i in [i for i in df.columns if i not in columns_to_exclude]:
-    pivot = df.pivot_table(index=i, columns='No-show', values='AppointmentDay', aggfunc='count')
-
-    pivot['total'] = pivot[0] + pivot[1]
-    pivot = pivot.dropna()
-    pivot[0] = np.round(pivot[0] / pivot['total'] * 100, 2)
-    pivot[1] = np.round(pivot[1] / pivot['total'] * 100, 2)
-    mean = np.median(pivot[1])
-    pivot.drop(columns='total', inplace=True)
-
-    fig, ax = plt.subplots(figsize=(20,8))
-    pivot.plot(kind='bar', ax=ax, title=f'Соотношение отказов в {i}', ylabel='%')
-    ax.axhline(mean, color='r', linestyle='--')
-    ax.text(-0.5, mean+1, f'Медиана: {mean:.2f}', color='r')
-
-    col1, col2 = st.columns((0.8, 0.2))
-
+    st.text('В данных сильный дисбаланс целевого показателя')
+    
+    fig, ax = plt.subplots()
+    ax.hist(df['Diff'], bins='auto')
+    st.pyplot(fig)
+    plt.title('Разница между записью и посещением больницы');
+    plt.xlabel('Количество дней');
+    
+    st.write('Построим матрицу кореляции для признаков наших данных')
+    st.write('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
+    
+    # Define columns
+    col1, col2 = st.columns((0.7, 0.3))
+    
+    # Draw the plot in the first column
     with col1:
+        fig, ax = plt.subplots(figsize=(16,10))
+        sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay','Neighbourhood']]].corr(), annot=True, ax=ax)
+        ax.set_title('Матрица кореляции признаков')
         st.pyplot(fig)
-        
+    
+    # Write the text in the second column
     with col2:
-        if plot_check.get(i, False) == False:
-            st.write(f"График: {i}")
-            # Write the output text for this plot
-            st.write(f"Вывод: {output_text.get(i, '')}")
-            plot_check[i] = True
-
-    bad = []
-    for j in range(len(pivot)):
-        if pivot.iloc[j][1] > mean+0.3:
-            bad.append(pivot.index[j])
-
-    if len(bad) > 1:
-        fig, ax = plt.subplots(figsize=(15,7))
-        pivot.loc[bad][1].plot(kind='bar', ax=ax, grid=True, title=f'В признаке {i} категории, которые имеют больше отказов')
+        st.write('Вывод : нас интересует признак No_show он отвечает за появление пациента он положительо корелирует с двумя данными признаками - Разница межу датами записи и приема и sms оповещением')
+    st.subheader('Построим признаки для выявления груп которые чаще не приходят по записи')
+    
+    columns_to_exclude = ['AppointmentDay','ScheduledDay','PatientId','No-show']
+    output_text = {
+        'Gender': 'Мы не видим ильных различий между посещением и пропусками в зависимости от пола',
+        'Age': 'Мы можем увидеть, что более молодые люди склонны к пропускам записи, основной возраст до 18 лет. Другая группа людей от 18 до 30 также превышает медианное значение, и мы видим, что чем старше пациенты становятся, тем меньше у них пропусков. Все группы, которые превышают порог, можно посмотреть в колонке Age 2.1.',
+        'Neighbourhood': 'Выявлены три района, у которых больше всего пропусков. С остальными районами можно ознакомиться в следующем графике.',
+        'Scholarship': 'Мы видим, что люди с медицинской страховкой чаще пропускают приемы.',
+        'Handcap':'Люди с 3 и 4 группой инвалидности так же склоны к пропускам записи',
+        'SMS_received':'Значительно превышает процент пропусков у людей которые получают смс оповещения',
+        'first_come':'Люди которые впервые бывают в поликлинике чаще не приходят по записи',
+        'Day_Appointment':'Люди которые записанны на пятницу или субботу чаще пропускают запись',
+        'Hours_Scheduled':'Обычно люди которые записываються по 20.00 пропускают запись ,со всеми часами можно ознакомиться в таблице ниже',
+        'Diff':'Если люди записываються за две недели они попадают в группу риска ну и чем позже тем риск становиться больше',
+        'Alcoholism':'Каждая группа не превысила порог .',
+        'Day_scheduled': 'Люди которые совершали запись в пятницу меньше всех не приходят по записи.',
+        'Hipertension & Diabetes':'Люди без хранических заболеваний чаще пропускают приемы,но это сильно корелирует с возрастом пациентов'
+    
+    }
+    
+    plot_check = {}
+    
+    for i in [i for i in df.columns if i not in columns_to_exclude]:
+        pivot = df.pivot_table(index=i, columns='No-show', values='AppointmentDay', aggfunc='count')
+    
+        pivot['total'] = pivot[0] + pivot[1]
+        pivot = pivot.dropna()
+        pivot[0] = np.round(pivot[0] / pivot['total'] * 100, 2)
+        pivot[1] = np.round(pivot[1] / pivot['total'] * 100, 2)
+        mean = np.median(pivot[1])
+        pivot.drop(columns='total', inplace=True)
+    
+        fig, ax = plt.subplots(figsize=(20,8))
+        pivot.plot(kind='bar', ax=ax, title=f'Соотношение отказов в {i}', ylabel='%')
+        ax.axhline(mean, color='r', linestyle='--')
+        ax.text(-0.5, mean+1, f'Медиана: {mean:.2f}', color='r')
+    
+        col1, col2 = st.columns((0.8, 0.2))
+    
         with col1:
             st.pyplot(fig)
+            
         with col2:
-            if plot_check.get(i + '2.1', False) == False:
-                st.write(f"График: {i} - 2.1")
-                plot_check[i + '2.1'] = True
-    elif len(bad) == 1:
-        with col2:
-
-            # Write the output text for this plot
             if plot_check.get(i, False) == False:
+                st.write(f"График: {i}")
+                # Write the output text for this plot
                 st.write(f"Вывод: {output_text.get(i, '')}")
                 plot_check[i] = True
-
-df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
-
-df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
-fig, ax = plt.subplots(figsize=(16,8))
-
-df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count').plot(style='o-', ax=ax)
-df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count').plot(style='o-', ax=ax)
-
-ax.grid(True)
-ax.set_title('Гафик количества пропусков и поещений')
-ax.legend(['Прешли','Пропустили'])
-
-st.pyplot(fig)
-
-st.subheader('Вывод')
-
-total = df.pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
-
-# Получаем количество записей для каждого дня для тех, кто пришел и пропустил
-attended = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
-missed = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
-
-# Нормализация данных до процентов
-attended_percentage = attended / total * 100
-missed_percentage = missed / total * 100
-
-# Создаем фигуру и оси используя matplotlib
-fig, ax = plt.subplots(figsize=(16,8))
-
-# Построение графиков
-attended_percentage.plot.bar(ax=ax,grid=True)
-missed_percentage.plot.bar(ax=ax,grid=True,color='r')
-plt.xlabel('Дни в году')
-plt.legend(['Прешли','Пропустили'])
-plt.title('График процента пропусков и посещений')
-
-# Показываем график в Streamlit
-st.pyplot(fig)
-
-df=df.drop('day_of_Scheduled',axis=1)
-
-#3d
-
-target=df['No-show']
-features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
-ordinal=OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=999999)
-features=ordinal.fit_transform(features)
-minmax=MinMaxScaler()
-features_scaller=minmax.fit_transform(features)
-pca=PCA(3)
-features_pca=pd.DataFrame(pca.fit_transform(features_scaller),columns=[1,2,3])
-features_pca['target']=target.reset_index(drop=True)
-
-fig = go.Figure(data=[go.Scatter3d(
-    x=features_pca[1],
-    y=features_pca[2],
-    z=features_pca[3],
-    mode='markers',
-    marker=dict(
-        size=4,
-        color=features_pca['target'],
-        colorscale='RdBu',
-        opacity=0.9,
-        colorbar=dict(title='Target')
-
-    ),name='Data',showlegend=True
-)])
-# Настройка меток осей
-fig.update_layout(scene=dict(
-    xaxis_title='X',
-    yaxis_title='Y',
-    zaxis_title='Z'
-))
-fig.update_layout(
-    legend=dict(
-        title='3d Модель связи признаков',
-        x=0.85,
-        y=0.95
+    
+        bad = []
+        for j in range(len(pivot)):
+            if pivot.iloc[j][1] > mean+0.3:
+                bad.append(pivot.index[j])
+    
+        if len(bad) > 1:
+            fig, ax = plt.subplots(figsize=(15,7))
+            pivot.loc[bad][1].plot(kind='bar', ax=ax, grid=True, title=f'В признаке {i} категории, которые имеют больше отказов')
+            with col1:
+                st.pyplot(fig)
+            with col2:
+                if plot_check.get(i + '2.1', False) == False:
+                    st.write(f"График: {i} - 2.1")
+                    plot_check[i + '2.1'] = True
+        elif len(bad) == 1:
+            with col2:
+    
+                # Write the output text for this plot
+                if plot_check.get(i, False) == False:
+                    st.write(f"Вывод: {output_text.get(i, '')}")
+                    plot_check[i] = True
+    
+    df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
+    
+    df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
+    fig, ax = plt.subplots(figsize=(16,8))
+    
+    df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count').plot(style='o-', ax=ax)
+    df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count').plot(style='o-', ax=ax)
+    
+    ax.grid(True)
+    ax.set_title('Гафик количества пропусков и поещений')
+    ax.legend(['Прешли','Пропустили'])
+    
+    st.pyplot(fig)
+    
+    st.subheader('Вывод')
+    
+    total = df.pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
+    
+    # Получаем количество записей для каждого дня для тех, кто пришел и пропустил
+    attended = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
+    missed = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
+    
+    # Нормализация данных до процентов
+    attended_percentage = attended / total * 100
+    missed_percentage = missed / total * 100
+    
+    # Создаем фигуру и оси используя matplotlib
+    fig, ax = plt.subplots(figsize=(16,8))
+    
+    # Построение графиков
+    attended_percentage.plot.bar(ax=ax,grid=True)
+    missed_percentage.plot.bar(ax=ax,grid=True,color='r')
+    plt.xlabel('Дни в году')
+    plt.legend(['Прешли','Пропустили'])
+    plt.title('График процента пропусков и посещений')
+    
+    # Показываем график в Streamlit
+    st.pyplot(fig)
+    
+    df=df.drop('day_of_Scheduled',axis=1)
+    
+    #3d
+    
+    target=df['No-show']
+    features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
+    ordinal=OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=999999)
+    features=ordinal.fit_transform(features)
+    minmax=MinMaxScaler()
+    features_scaller=minmax.fit_transform(features)
+    pca=PCA(3)
+    features_pca=pd.DataFrame(pca.fit_transform(features_scaller),columns=[1,2,3])
+    features_pca['target']=target.reset_index(drop=True)
+    
+    fig = go.Figure(data=[go.Scatter3d(
+        x=features_pca[1],
+        y=features_pca[2],
+        z=features_pca[3],
+        mode='markers',
+        marker=dict(
+            size=4,
+            color=features_pca['target'],
+            colorscale='RdBu',
+            opacity=0.9,
+            colorbar=dict(title='Target')
+    
+        ),name='Data',showlegend=True
+    )])
+    # Настройка меток осей
+    fig.update_layout(scene=dict(
+        xaxis_title='X',
+        yaxis_title='Y',
+        zaxis_title='Z'
+    ))
+    fig.update_layout(
+        legend=dict(
+            title='3d Модель связи признаков',
+            x=0.85,
+            y=0.95
+        )
     )
-)
-
-# Отображение графика в Streamlit
-st.plotly_chart(fig)
-
-st.subheader('Вывод')
+    
+    # Отображение графика в Streamlit
+    st.plotly_chart(fig)
+    
+    st.subheader('Вывод')
