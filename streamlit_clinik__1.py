@@ -53,11 +53,12 @@ if st.button('Сформировать датафрейм'):
     names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
     data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
 
-preprocesing = make_column_transformer(
-    (OneHotEncoder(), ['Scholarship','Gender','SMS_received','Hipertension & Diabetes','first_come']),
-    (OrdinalEncoder(), ['Neighbourhood']),
-    (MinMaxScaler(), ['Age','Diff','Hours_Scheduled','Day_Appointment','Handcap','Day_scheduled'])
-)
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', MinMaxScaler(), ['Age', 'Diff']),
+        ('cat', OneHotEncoder(sparse_output=False), ['Neighbourhood']),
+        ('ord', OrdinalEncoder(), ['Day_scheduled', 'Day_Appointment', 'Hours_Scheduled'])
+    ])
 
 df=pd.read_csv('/content/drive/MyDrive/учеба/медецина/KaggleV2-May-2016.csv')
 
@@ -86,7 +87,7 @@ def ready_data(data):
 
 data = ready_data(data)
 st.write(data)
-data=preprocesing.fit_transform(data)
+data=preprocessor.fit_transform(data)
 # модель
 st.write(data)
 model = Sequential()
