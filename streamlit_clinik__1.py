@@ -279,6 +279,7 @@ if st.button('Показать аналитику по данным'):
                 if plot_check.get(i, False) == False:
                     st.write(f"Вывод: {output_text.get(i, '')}")
                     plot_check[i] = True
+    
     st.subheader('Вывод')
     st.write("Исходя из предоставленных данных, можно сделать следующий вывод:")
     st.write("Чаще всего не приходят на прием молодые люди, проживающие в определенных районах. Они часто являются новыми пациентами в поликлинике, обладают медицинской страховкой и не имеют хронических заболеваний.")
@@ -286,17 +287,19 @@ if st.button('Показать аналитику по данным'):
     st.write("Также стоит отметить, что пациенты, записанные на прием в пятницу или субботу, чаще пропускают прием, однако те, кто записался на пятницу, на самом деле чаще всего приходят по записи.")
     st.write("Кроме того, риск пропуска приема увеличивается, если пациент записывается на прием позднее, чем через 14 дней.")
     
+    import plotly.graph_objects as go
+
     df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
-    
     df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
+    
     # Создание DataFrame'ов для графиков
     came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
     not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
     
     # Создание графиков
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines+markers', name='Пришли'))
-    fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines+markers', name='Пропустили'))
+    fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
+    fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
     
     fig.update_layout(title='График количества пропусков и посещений',
                       xaxis_title='День',
@@ -304,7 +307,8 @@ if st.button('Показать аналитику по данным'):
                       legend_title='Статус',
                       hovermode='x unified')
     
-    fig.show()
+    # Отображение графика в Streamlit
+    st.plotly_chart(fig)
     
   
     
