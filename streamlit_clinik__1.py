@@ -264,7 +264,9 @@ features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
 ordinal=OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=999999)
 features=ordinal.fit_transform(features)
 minmax=MinMaxScaler()
-features_pca=minmax.fit_transform(features)
+features_scaller=minmax.fit_transform(features)
+pca=PCA(3)
+features_pca=pd.DataFrame(pca.fit_transform(features_scaller),columns=[1,2,3])
 features_pca['target']=target.reset_index(drop=True)
 
 fig = go.Figure(data=[go.Scatter3d(
