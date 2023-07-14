@@ -82,7 +82,7 @@ df=pd.read_csv('KaggleV2-May-2016.csv')
 
 
 
-st.write(data.info())
+st.write(data)
 data=preprocessor.fit_transform(data)
 # модель
 st.write(data)
