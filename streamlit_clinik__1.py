@@ -108,7 +108,7 @@ weights = {0: 1., 1: 4.}
 model.load_weights('my_model_weights.h5')
 
 predictions = model.predict(data_transformed)
-st.write(f'Вероятность посещения пациента - {np.round(predictions)*100} %')
+st.write(f'Вероятность посещения пациента - {np.round(predictions,2)} %')
 
 st.header('Часть 2')
 st.subheader('Аналитика по данным по которым проходило обучение и выявление клиента который более склонен не посещать запись')
