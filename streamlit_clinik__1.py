@@ -141,8 +141,9 @@ if st.button('Записать пациента', key='predict'):
     rounded_prediction = round(prediction * 100, 2)
     st.write(f'Вероятность посещения пациента - {rounded_prediction} %')
 
-
-if st.button('Показать аналитику по данным', key='analyse'):
+if st.button('Показать аналитику', key='analytics_button'):
+    st.session_state.show_analytics = True
+if st.session_state.get('show_analytics'):
     st.title('Часть 2: Анализ данных и визуализация')
 
     st.header('Введение')
@@ -393,8 +394,10 @@ if st.button('Показать аналитику по данным', key='analy
         # Отображение графика в Streamlit
         st.plotly_chart(fig)
 
-    if st.button('Построить 3D график'):
-        plot_3d_graph()
+if st.button('Построить 3D график', key='plot_button'):
+    st.session_state.plot_3d_graph = True
+if st.session_state.get('plot_3d_graph'):
+    plot_3d_graph()
 
     st.markdown("## Вывод")
     st.markdown("После сокращения размера нашего данных с использованием метода **Главных компонент** мы обнаружили **8 четко определенных групп**. Эти группы представляют собой ценную информацию, которую мы можем использовать для определения внутренних зависимостей и разработки специфических предложений. Такой подход позволит нам улучшить понимание наших клиентов и принимать меры, которые приведут к положительным результатам и увеличению прибыли.")
