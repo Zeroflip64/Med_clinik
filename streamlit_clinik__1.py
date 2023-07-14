@@ -60,7 +60,7 @@ preprocessor = ColumnTransformer(
         ('ord', OrdinalEncoder(), ['Day_scheduled', 'Day_Appointment', 'Hours_Scheduled'])
     ])
 
-df=pd.read_csv('/content/drive/MyDrive/учеба/медецина/KaggleV2-May-2016.csv')
+df=pd.read_csv('KaggleV2-May-2016.csv')
 
 def ready_data(data):
     # Заполнение пропущенных значений нулями
@@ -101,7 +101,7 @@ model.add(BatchNormalization())
 model.add(Dense(1, activation='sigmoid'))
 weights = {0: 1., 1: 4.}
 
-model.load_weights('/content/drive/MyDrive/учеба/медецина/my_model_weights.h5')
+model.load_weights('my_model_weights.h5')
 
 predictions = model.predict(data)
 st.write(f'Вероятность посещения пациента - {np.round(predictions)*100} %')
