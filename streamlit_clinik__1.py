@@ -133,7 +133,7 @@ st.write('Построим матрицу кореляции для призна
 st.write('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
 
 # Define columns
-col1, col2 = st.columns(2)
+col1, col2 = st.columns((0.8, 0.2))
 
 # Draw the plot in the first column
 with col1:
@@ -159,12 +159,13 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
     mean = np.median(pivot[1])
     pivot.drop(columns='total', inplace=True)
 
-    fig, ax = plt.subplots(figsize=(16,5))
+    fig, ax = plt.subplots(figsize=(20,8))
     pivot.plot(kind='bar', ax=ax, title=f'Соотношение отказов в {i}', ylabel='%')
     ax.axhline(mean, color='r', linestyle='--')
     ax.text(-0.5, mean+1, f'Медиана: {mean:.2f}', color='r')
 
-    col1, col2 = st.columns(2)
+    # Create two columns with different width proportions
+    col1, col2 = st.columns((0.8, 0.2))
     
     with col1:
         st.pyplot(fig)
@@ -175,7 +176,7 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
             bad.append(pivot.index[j])
 
     if len(bad) > 1:
-        fig, ax = plt.subplots(figsize=(10,5))
+        fig, ax = plt.subplots(figsize=(15,7))
         pivot.loc[bad][1].plot(kind='bar', ax=ax, grid=True, title=f'В признаке {i} категории, которые имеют больше отказов')
         with col1:
             st.pyplot(fig)
@@ -184,6 +185,7 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
             st.write(f'В признаке {i} чаще отказываются в категории {bad}')
 
 st.subheader('Вывод')
+
 
 
 df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
