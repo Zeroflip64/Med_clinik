@@ -216,6 +216,8 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
                 st.write(f"Вывод: {output_text.get(i, '')}")
                 plot_check[i] = True
 
+df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
+
 df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
 fig, ax = plt.subplots(figsize=(16,8))
 
@@ -228,7 +230,8 @@ ax.legend(['Прешли','Пропустили'])
 
 st.pyplot(fig)
 
-st.subhead('Вывод')
+st.subheader('Вывод')
+
 total = df.pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
 
 # Получаем количество записей для каждого дня для тех, кто пришел и пропустил
