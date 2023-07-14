@@ -368,8 +368,9 @@ if st.button('Показать аналитику по данным'):
         return features_pca
     
     def main():
+    with st.spinner('Загрузка данных...'):
         features_pca = get_pca_data()
-    
+
         # Создание графика
         fig = go.Figure(data=[go.Scatter3d(
                 x=features_pca[1],
@@ -382,7 +383,6 @@ if st.button('Показать аналитику по данным'):
                     colorscale='RdBu',
                     opacity=0.9,
                     colorbar=dict(title='Target')
-    
                 ),name='Data',showlegend=True
             )])
     
@@ -399,9 +399,10 @@ if st.button('Показать аналитику по данным'):
                 y=0.95
             )
         )
-
-    # Отображение графика в Streamlit
+    
+        # Отображение графика в Streamlit
         st.plotly_chart(fig)
+        st.success('График успешно загружен!')
     if __name__ == "__main__":
         main()
     st.markdown("## Вывод")
