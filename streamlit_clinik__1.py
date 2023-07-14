@@ -74,7 +74,7 @@ if st.button('Сформировать датафрейм'):
 df=pd.read_csv('df.csv')
 
 @st.cache_data()
-def prepocessor(data):
+def prepocessor():
     
     preprocessor = ColumnTransformer(
     transformers=[
@@ -83,17 +83,20 @@ def prepocessor(data):
         ('ord', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
     ],
         remainder='passthrough')
-    st.write(df.head())
+    
     df=pd.read_csv('df.csv')
+    
     target=df['No-show']
     features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
-    features_train=preprocessor.fit_transform(features)
-    return preprocessor.transform(data)
+    st.write(features.head())
+    features_train=preprocessor.fit(features)
+    return preprocessor
 
 
 
 st.write(data)
-data = prepocessor(data)
+preprocessor=preprocessor()
+data = preprocessor.transform(data)
 # модель
 st.write(data)
 model = Sequential()
