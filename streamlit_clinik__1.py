@@ -288,30 +288,40 @@ if st.button('Показать аналитику по данным'):
     st.write("Также стоит отметить, что пациенты, записанные на прием в пятницу или субботу, чаще пропускают прием, однако те, кто записался на пятницу, на самом деле чаще всего приходят по записи.")
     st.write("Кроме того, риск пропуска приема увеличивается, если пациент записывается на прием позднее, чем через 14 дней.")
     
-    import plotly.graph_objects as go
-
-    df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
-    df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
+    @st.cache_data()
+    def get_data():
+        # Загрузка данных
+        df = pd.read_csv('df.csv',index_col=0)
     
-    # Создание DataFrame'ов для графиков
-    came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
-    not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
+        # Преобразование даты и создание новой колонки
+        df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
+        df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
     
-    # Создание графиков
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
-    fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
+        # Создание DataFrame'ов для графиков
+        came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
+        not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
     
-    fig.update_layout(title='График количества пропусков и посещений',
-                      xaxis_title='День',
-                      yaxis_title='Количество',
-                      legend_title='Статус',
-                      hovermode='x unified')
+        return came, not_came
     
-    # Отображение графика в Streamlit
-    st.plotly_chart(fig)
+    def main():
+        came, not_came = get_data()
+        
+        # Создание графиков
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
+        fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
     
-  
+        fig.update_layout(title='График количества пропусков и посещений',
+                          xaxis_title='День',
+                          yaxis_title='Количество',
+                          legend_title='Статус',
+                          hovermode='x unified')
+    
+        # Отображение графика в Streamlit
+        st.plotly_chart(fig)
+    
+    if __name__ == "__main__":
+        main()
     
     total = df.pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
     
@@ -342,47 +352,58 @@ if st.button('Показать аналитику по данным'):
     st.markdown("Учитывая, что пропуски могут быть обусловлены факторами, не учтенными в наших данных, и с учетом точности модели в **75%**, мы можем дальше сократить пропуски до уровня около **10%**. Это может иметь значительное положительное влияние на работу поликлиники, позволяя составлять более точное расписание и эффективно управлять финансовыми ресурсами.")
     #3d
     
-    target=df['No-show']
-    features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
-    ordinal=OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=999999)
-    features=ordinal.fit_transform(features)
-    minmax=MinMaxScaler()
-    features_scaller=minmax.fit_transform(features)
-    pca=PCA(3)
-    features_pca=pd.DataFrame(pca.fit_transform(features_scaller),columns=[1,2,3])
-    features_pca['target']=target.reset_index(drop=True)
+
+    @st.cache_data()
+    def get_pca_data():
+        df = pd.read_csv('df.csv',index_col=0)
+        target=df['No-show']
+        features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
+        ordinal=OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=999999)
+        features=ordinal.fit_transform(features)
+        minmax=MinMaxScaler()
+        features_scaller=minmax.fit_transform(features)
+        pca=PCA(3)
+        features_pca=pd.DataFrame(pca.fit_transform(features_scaller),columns=[1,2,3])
+        features_pca['target']=target.reset_index(drop=True)
+        return features_pca
     
-    fig = go.Figure(data=[go.Scatter3d(
-        x=features_pca[1],
-        y=features_pca[2],
-        z=features_pca[3],
-        mode='markers',
-        marker=dict(
-            size=4,
-            color=features_pca['target'],
-            colorscale='RdBu',
-            opacity=0.9,
-            colorbar=dict(title='Target')
+    def main():
+        features_pca = get_pca_data()
     
-        ),name='Data',showlegend=True
-    )])
-    # Настройка меток осей
-    fig.update_layout(scene=dict(
-        xaxis_title='X',
-        yaxis_title='Y',
-        zaxis_title='Z'
-    ))
-    fig.update_layout(
-        legend=dict(
-            title='3d Распределения признаков',
-            x=0.85,
-            y=0.95
+        # Создание графика
+        fig = go.Figure(data=[go.Scatter3d(
+                x=features_pca[1],
+                y=features_pca[2],
+                z=features_pca[3],
+                mode='markers',
+                marker=dict(
+                    size=4,
+                    color=features_pca['target'],
+                    colorscale='RdBu',
+                    opacity=0.9,
+                    colorbar=dict(title='Target')
+    
+                ),name='Data',showlegend=True
+            )])
+    
+        # Настройка меток осей и легенды
+        fig.update_layout(scene=dict(
+                xaxis_title='X',
+                yaxis_title='Y',
+                zaxis_title='Z'
+            ))
+        fig.update_layout(
+            legend=dict(
+                title='3d Распределения признаков',
+                x=0.85,
+                y=0.95
+            )
         )
-    )
-    
+
     # Отображение графика в Streamlit
-    st.plotly_chart(fig)
-    
+        st.plotly_chart(fig)
+    if __name__ == "__main__":
+        main()
     st.markdown("## Вывод")
     st.markdown("После сокращения размера нашего данных с использованием метода **Главных компонент** мы обнаружили **8 четко определенных групп**. Эти группы представляют собой ценную информацию, которую мы можем использовать для определения внутренних зависимостей и разработки специфических предложений. Такой подход позволит нам улучшить понимание наших клиентов и принимать меры, которые приведут к положительным результатам и увеличению прибыли.")
     
