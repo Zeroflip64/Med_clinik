@@ -164,7 +164,10 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
     ax.axhline(mean, color='r', linestyle='--')
     ax.text(-0.5, mean+1, f'Медиана: {mean:.2f}', color='r')
 
-    st.pyplot(fig)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.pyplot(fig)
 
     bad = []
     for j in range(len(pivot)):
@@ -174,11 +177,14 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
     if len(bad) > 1:
         fig, ax = plt.subplots(figsize=(10,5))
         pivot.loc[bad][1].plot(kind='bar', ax=ax, grid=True, title=f'В признаке {i} категории, которые имеют больше отказов')
-        st.pyplot(fig)
+        with col1:
+            st.pyplot(fig)
     elif len(bad) == 1:
-        st.write(f'В признаке {i} чаще отказываются в категории {bad}')
+        with col2:
+            st.write(f'В признаке {i} чаще отказываются в категории {bad}')
 
 st.subheader('Вывод')
+
 
 df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
 fig, ax = plt.subplots(figsize=(16,8))
