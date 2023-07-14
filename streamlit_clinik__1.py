@@ -84,16 +84,15 @@ def prepocessor(data):
     ],
         remainder='passthrough')
     df=pd.read_csv('df.csv',index_col=0)
-    st.write(df.head())
     target=df['No-show']
     features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
     preprocessor.fit(features)
     return preprocessor
 
-st.write(data)
+
 preprocessor = prepocessor(data)
 data_transformed = preprocessor.transform(data)
-
+st.write('+')
 
 
 # модель
