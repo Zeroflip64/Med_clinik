@@ -89,7 +89,7 @@ def prepocessor(data):
 
 preprocessor = prepocessor(data)
 data_transformed = preprocessor.transform(data)
-st.write(data_transformed)
+st.write(pd.DataFrame(data_transformed,columns=data.columns))
 
 
 # модель
@@ -107,7 +107,7 @@ weights = {0: 1., 1: 4.}
 
 model.load_weights('my_model_weights.h5')
 
-predictions = model.predict(data)
+predictions = model.predict(data_transformed)
 st.write(f'Вероятность посещения пациента - {np.round(predictions)*100} %')
 
 st.header('Часть 2')
