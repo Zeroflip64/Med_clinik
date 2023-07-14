@@ -32,7 +32,7 @@ gender_pacient=st.selectbox('Выберите число',['М','Ж'])
 age=st.number_input('Возраст', step=1, format="%i")
 today=st.text_input('Дата обращения (формат : Год-месяц-день-Часы:Минуты:Секунды)')
 come=st.text_input('Дата аписи (формат : Год-месяц-день)')
-place=[i for i in df['Neighbourhood']]
+place={i for i in df['Neighbourhood']}
 adress=st.selectbox('Выберите район проживания пациента',place)
 stolalrship=st.selectbox('У пациента есть мед страховка ',['Да' , 'Нет'])
 hronical=st.selectbox('У пациента есть хроничекие заболевания',['Да' , 'Нет'])
