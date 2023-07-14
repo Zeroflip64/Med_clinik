@@ -355,8 +355,9 @@ if st.button('Показать аналитику по данным', key='analy
         features_pca['target']=target.reset_index(drop=True)
         return features_pca
     
-    def main():
-        if st.button('Загрузить 3D график', key='3d'):
+    if st.button('Загрузить 3D график', key='3d'):
+        def main():
+        
             with st.spinner('Загрузка данных и построение графика...'):
                 features_pca = get_pca_data()
     
