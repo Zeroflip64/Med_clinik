@@ -70,13 +70,7 @@ if st.button('Сформировать датафрейм'):
     data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
     data = ready_data(data)
     
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', MinMaxScaler(), ['Age', 'Diff']),
-        ('ord', OrdinalEncoder(), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
-    ],
-    remainder='passthrough'
-)
+preprocessor = joblib.load('preprocessor.pkl')
 
 df=pd.read_csv('KaggleV2-May-2016.csv')
 
