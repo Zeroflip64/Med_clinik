@@ -130,7 +130,7 @@ weights = {0: 1., 1: 4.}
 model.load_weights('my_model_weights.h5')
 
 # Нажатие кнопки для формирования датафрейма
-if st.button('Записать пациента'):
+if st.button('Записать пациента', key='predict'):
     names = ['Gender', 'Age', 'ScheduledDay', 'AppointmentDay', 'Neighbourhood', 'Scholarship', 'Hipertension & Diabetes', 'Handcap', 'SMS_received', 'first_come']
     data = pd.DataFrame(dict(zip(names, [gender_pacient, age, today, come, adress, stolalrship, hronical, Handcap, sms, first_time])), index=[0])
     data = ready_data(data)
@@ -142,7 +142,7 @@ if st.button('Записать пациента'):
     st.write(f'Вероятность посещения пациента - {rounded_prediction} %')
 
 
-if st.button('Показать аналитику по данным'):
+if st.button('Показать аналитику по данным', key='analyse'):
     st.title('Часть 2: Анализ данных и визуализация')
 
     st.header('Введение')
@@ -356,7 +356,7 @@ if st.button('Показать аналитику по данным'):
         return features_pca
     
     def main():
-        if st.button('Загрузить 3D график'):
+        if st.button('Загрузить 3D график', key='3d'):
             with st.spinner('Загрузка данных и построение графика...'):
                 features_pca = get_pca_data()
     
