@@ -288,40 +288,26 @@ if st.button('Показать аналитику по данным'):
     st.write("Также стоит отметить, что пациенты, записанные на прием в пятницу или субботу, чаще пропускают прием, однако те, кто записался на пятницу, на самом деле чаще всего приходят по записи.")
     st.write("Кроме того, риск пропуска приема увеличивается, если пациент записывается на прием позднее, чем через 14 дней.")
     
-    @st.cache_data()
-    def get_data():
-        # Загрузка данных
-        df = pd.read_csv('df.csv',index_col=0)
+    df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
+    df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
     
-        # Преобразование даты и создание новой колонки
-        df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
-        df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
+    # Создание DataFrame'ов для графиков
+    came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
+    not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
     
-        # Создание DataFrame'ов для графиков
-        came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
-        not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
+    # Создание графиков
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
+    fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
     
-        return came, not_came
+    fig.update_layout(title='График количества пропусков и посещений',
+                      xaxis_title='День',
+                      yaxis_title='Количество',
+                      legend_title='Статус',
+                      hovermode='x unified')
     
-    def main():
-        came, not_came = get_data()
-        
-        # Создание графиков
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
-        fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
-    
-        fig.update_layout(title='График количества пропусков и посещений',
-                          xaxis_title='День',
-                          yaxis_title='Количество',
-                          legend_title='Статус',
-                          hovermode='x unified')
-    
-        # Отображение графика в Streamlit
-        st.plotly_chart(fig)
-    
-    if __name__ == "__main__":
-        main()
+    # Отображение графика в Streamlit
+    st.plotly_chart(fig)
     
     total = df.pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
     
