@@ -41,17 +41,17 @@ hronical=st.selectbox('У пациента есть хроничекие заб�
 Handcap=st.selectbox('Есть ли инвалидность и если есть то какая группа, если нету указать 0',[0,1,2,3,4])
 sms=st.selectbox('Есть ли у пациента sms оповещение',['Да','Нет'])
 first_time=st.selectbox('Пациент впервые обратился в клинику',['Да','Нет'])
-data=None
+
 # Нажатие кнопки для формирования датафрейма
 if st.button('Сформировать датафрейм'):
     names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
     data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
-
+    data = ready_data(data)
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', MinMaxScaler(), ['Age', 'Diff']),
-        ('cat', OneHotEncoder(sparse_output=False), ['Neighbourhood']),
-        ('ord', OrdinalEncoder(), ['Day_scheduled', 'Day_Appointment', 'Hours_Scheduled'])
+        
+        ('ord', OrdinalEncoder(), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
     ])
 
 df=pd.read_csv('KaggleV2-May-2016.csv')
@@ -79,7 +79,7 @@ def ready_data(data):
     return data
 
 
-data = ready_data(data)
+
 st.write(data.info())
 data=preprocessor.fit_transform(data)
 # модель
