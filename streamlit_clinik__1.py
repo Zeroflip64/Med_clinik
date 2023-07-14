@@ -69,12 +69,14 @@ if st.button('Сформировать датафрейм'):
     names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
     data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
     data = ready_data(data)
+    
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', MinMaxScaler(), ['Age', 'Diff']),
-        
         ('ord', OrdinalEncoder(), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
-    ])
+    ],
+    remainder='passthrough'
+)
 
 df=pd.read_csv('KaggleV2-May-2016.csv')
 
