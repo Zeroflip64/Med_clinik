@@ -22,7 +22,7 @@ from sklearn.metrics import f1_score,roc_auc_score,precision_score,accuracy_scor
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout,BatchNormalization
 from tensorflow.keras.optimizers import Adam
-
+import joblib
 import streamlit as st
 
 #Model
