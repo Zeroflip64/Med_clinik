@@ -130,22 +130,21 @@ plt.title('Разница между записью и посещением бо
 plt.xlabel('Количество дней');
 
 st.write('Построим матрицу кореляции для признаков наших данных')
-st.text('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
+st.write('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
 
 # Define columns
 col1, col2 = st.columns(2)
 
 # Draw the plot in the first column
 with col1:
-    plt.figure(figsize=(16,10))
-    sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay','Neighbourhood']]].corr(), annot=True)
-    plt.title('Матрица кореляции признаков')
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(16,10))
+    sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay','Neighbourhood']]].corr(), annot=True, ax=ax)
+    ax.set_title('Матрица кореляции признаков')
+    st.pyplot(fig)
 
 # Write the text in the second column
 with col2:
     st.write('Вывод : нас интересует признак No_show он отвечает за появление пациента он положительо корелирует с двумя данными признаками - Разница межу датами записи и приема и sms оповещением')
-
 st.subheader('Построим признаки для выявления груп которые чаще не приходят по записи')
 
 columns_to_exclude = ['AppointmentDay','ScheduledDay','PatientId','No-show']
