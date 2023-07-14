@@ -355,13 +355,12 @@ if st.button('Показать аналитику по данным', key='analy
         features_pca['target']=target.reset_index(drop=True)
         return features_pca
     
-    if st.button('Загрузить 3D график', key='3d'):
-        def main():
-        
-            with st.spinner('Загрузка данных и построение графика...'):
-                features_pca = get_pca_data()
+    def main():
+        features_pca = get_pca_data()
     
-                # Создание графика
+        # Создание графика
+        if st.checkbox('Показать 3D график'):
+            with st.spinner('Загрузка данных и построение графика...'):
                 fig = go.Figure(data=[go.Scatter3d(
                     x=features_pca[1],
                     y=features_pca[2],
@@ -393,6 +392,7 @@ if st.button('Показать аналитику по данным', key='analy
                 # Отображение графика в Streamlit
                 st.plotly_chart(fig)
                 st.success('График успешно загружен!')
+    
     if __name__ == "__main__":
         main()
     st.markdown("## Вывод")
