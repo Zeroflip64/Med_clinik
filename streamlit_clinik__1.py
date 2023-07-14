@@ -133,7 +133,7 @@ st.write('Построим матрицу кореляции для призна
 st.write('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
 
 # Define columns
-col1, col2 = st.columns((0.8, 0.2))
+col1, col2 = st.columns((0.7, 0.3))
 
 # Draw the plot in the first column
 with col1:
@@ -148,6 +148,19 @@ with col2:
 st.subheader('Построим признаки для выявления груп которые чаще не приходят по записи')
 
 columns_to_exclude = ['AppointmentDay','ScheduledDay','PatientId','No-show']
+output_text = {
+    'Gender': 'Мы не видим ильных различий между посещением и пропусками в зависимости от пола',
+    'Age': 'Мы можем увидеть, что более молодые люди склонны к пропускам записи, основной возраст до 18 лет. Другая группа людей от 18 до 30 также превышает медианное значение, и мы видим, что чем старше пациенты становятся, тем меньше у них пропусков. Все группы, которые превышают порог, можно посмотреть в колонке Age 2.1.',
+    'Neighbourhood': 'Выявлены три района, у которых больше всего пропусков. С остальными районами можно ознакомиться в следующем графике.',
+    'Scholarship': 'Мы видим, что люди с медицинской страховкой чаще пропускают приемы.',
+    'Handcap':'Люди с 3 и 4 группой инвалидности так же склоны к пропускам записи',
+    'SMS_received':'Значительно превышает процент пропусков у людей которые получают смс оповещения',
+    'first_come':'Люди которые впервые бывают в поликлинике чаще не приходят по записи',
+    'Day_Appointment':'Люди которые записанны на пятницу или субботу чаще пропускают запись',
+    'Hours_Scheduled':'Обычно люди которые записываються по 20.00 пропускают запись ,со всеми часами можно ознакомиться в таблице ниже',
+    'Diff':'Если люди записываються за две недели они попадают в группу риска ну и чем позже тем риск становиться больше'
+
+}
 
 for i in [i for i in df.columns if i not in columns_to_exclude]:
     pivot = df.pivot_table(index=i, columns='No-show', values='AppointmentDay', aggfunc='count')
@@ -164,11 +177,15 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
     ax.axhline(mean, color='r', linestyle='--')
     ax.text(-0.5, mean+1, f'Медиана: {mean:.2f}', color='r')
 
-    # Create two columns with different width proportions
     col1, col2 = st.columns((0.8, 0.2))
-    
+
     with col1:
         st.pyplot(fig)
+        
+    with col2:
+        st.write(f"График: {i}")
+        # Write the output text for this plot
+        st.write(f"Вывод: {output_text.get(i, '')}")
 
     bad = []
     for j in range(len(pivot)):
@@ -180,11 +197,16 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
         pivot.loc[bad][1].plot(kind='bar', ax=ax, grid=True, title=f'В признаке {i} категории, которые имеют больше отказов')
         with col1:
             st.pyplot(fig)
+        with col2:
+            st.write(f"График: {i} - категории с большим числом отказов")
+            # Write the output text for this plot
+            st.write(f"Вывод: {output_text.get(i, '')}")
     elif len(bad) == 1:
         with col2:
             st.write(f'В признаке {i} чаще отказываются в категории {bad}')
+            # Write the output text for this plot
+            st.write(f"Вывод: {output_text.get(i, '')}")
 
-st.subheader('Вывод')
 
 
 
