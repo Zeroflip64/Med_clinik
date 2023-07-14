@@ -25,7 +25,7 @@ from tensorflow.keras.optimizers import Adam
 import joblib
 import streamlit as st
 import plotly.graph_objects as go
-
+mpl.rcParams['figure.max_open_warning'] = 30
 st.title('Предсказание посещения поликлиники')
 
 st.header('Введение')
