@@ -132,7 +132,7 @@ plt.xlabel('Количество дней');
 st.write('Построим матрицу кореляции для признаков наших данных')
 st.text('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
 plt.figure(figsize=(16,10))
-sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay']]].corr(), annot=True)
+sns.heatmap(df[[i for i in df.columns if i not in ['AppointmentDay', 'ScheduledDay','Neighbourhood']]].corr(), annot=True)
 plt.title('Матрица кореляции признаков')
 st.pyplot()
 
