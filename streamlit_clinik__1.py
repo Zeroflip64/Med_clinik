@@ -89,14 +89,14 @@ def prepocessor(data):
 
 preprocessor = prepocessor(data)
 data_transformed = preprocessor.transform(data)
-st.write(pd.DataFrame(data_transformed,columns=data.columns))
+data_transformed=pd.DataFrame(data_transformed,columns=data.columns)
 
 
 # модель
 st.write(data)
 model = Sequential()
 opt = Adam(learning_rate=0.001)
-model.add(Dense(128, input_dim=data.shape[1], activation='relu'))
+model.add(Dense(128, input_dim=data_transformed.shape[1], activation='relu'))
 model.add(BatchNormalization())
 model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.4))
