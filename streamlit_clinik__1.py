@@ -71,7 +71,7 @@ if st.button('Сформировать датафрейм'):
     data = ready_data(data)
     
 
-df=pd.read_csv('df.csv')
+df=pd.read_csv('df.csv',index_col=0)
 
 @st.cache_data()
 def prepocessor(data):
@@ -83,7 +83,7 @@ def prepocessor(data):
         ('ord', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
     ],
         remainder='passthrough')
-    df=pd.read_csv('df.csv')
+    df=pd.read_csv('df.csv',index_col=0)
     st.write(df.head())
     target=df['No-show']
     features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
