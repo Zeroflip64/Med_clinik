@@ -277,7 +277,7 @@ fig = go.Figure(data=[go.Scatter3d(
     marker=dict(
         size=4,
         color=features_pca['target'],
-        colorscale='Greys',
+        colorscale='RdBu',
         opacity=0.9,
         colorbar=dict(title='Target')
 
