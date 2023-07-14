@@ -354,41 +354,42 @@ if st.button('Показать аналитику по данным'):
         return features_pca
     
     def main():
-    with st.spinner('Загрузка данных...'):
-        features_pca = get_pca_data()
-
-        # Создание графика
-        fig = go.Figure(data=[go.Scatter3d(
-                x=features_pca[1],
-                y=features_pca[2],
-                z=features_pca[3],
-                mode='markers',
-                marker=dict(
-                    size=4,
-                    color=features_pca['target'],
-                    colorscale='RdBu',
-                    opacity=0.9,
-                    colorbar=dict(title='Target')
-                ),name='Data',showlegend=True
-            )])
+        if st.button('Загрузить 3D график'):
+            with st.spinner('Загрузка данных и построение графика...'):
+                features_pca = get_pca_data()
     
-        # Настройка меток осей и легенды
-        fig.update_layout(scene=dict(
-                xaxis_title='X',
-                yaxis_title='Y',
-                zaxis_title='Z'
-            ))
-        fig.update_layout(
-            legend=dict(
-                title='3d Распределения признаков',
-                x=0.85,
-                y=0.95
-            )
-        )
+                # Создание графика
+                fig = go.Figure(data=[go.Scatter3d(
+                    x=features_pca[1],
+                    y=features_pca[2],
+                    z=features_pca[3],
+                    mode='markers',
+                    marker=dict(
+                        size=4,
+                        color=features_pca['target'],
+                        colorscale='RdBu',
+                        opacity=0.9,
+                        colorbar=dict(title='Target')
+                    ),name='Data',showlegend=True
+                )])
     
-        # Отображение графика в Streamlit
-        st.plotly_chart(fig)
-        st.success('График успешно загружен!')
+                # Настройка меток осей и легенды
+                fig.update_layout(scene=dict(
+                    xaxis_title='X',
+                    yaxis_title='Y',
+                    zaxis_title='Z'
+                ))
+                fig.update_layout(
+                    legend=dict(
+                        title='3d Распределения признаков',
+                        x=0.85,
+                        y=0.95
+                    )
+                )
+    
+                # Отображение графика в Streamlit
+                st.plotly_chart(fig)
+                st.success('График успешно загружен!')
     if __name__ == "__main__":
         main()
     st.markdown("## Вывод")
