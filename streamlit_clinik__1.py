@@ -25,10 +25,7 @@ from tensorflow.keras.optimizers import Adam
 import joblib
 import streamlit as st
 
-#Model
 
-
-# Компиляция модели
 
 
 gender_pacient=st.selectbox('Выберите число',['М','Ж'])
@@ -92,7 +89,7 @@ def prepocessor(data):
 
 preprocessor = prepocessor(data)
 data_transformed = preprocessor.transform(data)
-st.write('+')
+st.write(data_transformed)
 
 
 # модель
