@@ -42,20 +42,6 @@ Handcap=st.selectbox('Есть ли инвалидность и если ест�
 sms=st.selectbox('Есть ли у пациента sms оповещение',['Да','Нет'])
 first_time=st.selectbox('Пациент впервые обратился в клинику',['Да','Нет'])
 
-# Нажатие кнопки для формирования датафрейма
-if st.button('Сформировать датафрейм'):
-    names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
-    data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
-    data = ready_data(data)
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', MinMaxScaler(), ['Age', 'Diff']),
-        
-        ('ord', OrdinalEncoder(), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
-    ])
-
-df=pd.read_csv('KaggleV2-May-2016.csv')
-
 def ready_data(data):
     # Заполнение пропущенных значений нулями
     data = data.fillna(0)
@@ -77,6 +63,22 @@ def ready_data(data):
     data = data.drop(['AppointmentDay','ScheduledDay'],axis=1)
 
     return data
+    
+# Нажатие кнопки для формирования датафрейма
+if st.button('Сформировать датафрейм'):
+    names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
+    data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
+    data = ready_data(data)
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', MinMaxScaler(), ['Age', 'Diff']),
+        
+        ('ord', OrdinalEncoder(), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
+    ])
+
+df=pd.read_csv('KaggleV2-May-2016.csv')
+
+
 
 
 
