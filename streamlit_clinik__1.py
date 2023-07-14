@@ -24,8 +24,7 @@ from tensorflow.keras.layers import Dense, Dropout,BatchNormalization
 from tensorflow.keras.optimizers import Adam
 import joblib
 import streamlit as st
-
-import streamlit as st
+import plotly.graph_objects as go
 
 st.title('Предсказание посещения поликлиники')
 
@@ -289,23 +288,26 @@ if st.button('Показать аналитику по данным'):
     st.write("Кроме того, риск пропуска приема увеличивается, если пациент записывается на прием позднее, чем через 14 дней.")
     
     
-    df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
     
+
+    df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay'])
+    df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
+
     # Создание DataFrame'ов для графиков
     came = df.loc[df['No-show']==0].pivot_table(index='day_of_Scheduled',values='No-show',aggfunc='count')
     not_came = df.loc[df['No-show']==1].pivot_table(index='day_of_Scheduled',values='Age',aggfunc='count')
-    
+
     # Создание графиков
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=came.index, y=came['No-show'], mode='lines', name='Пришли'))
     fig.add_trace(go.Scatter(x=not_came.index, y=not_came['Age'], mode='lines', name='Пропустили'))
-    
+
     fig.update_layout(title='График количества пропусков и посещений',
                       xaxis_title='День',
                       yaxis_title='Количество',
                       legend_title='Статус',
                       hovermode='x unified')
-    
+
     # Отображение графика в Streamlit
     st.plotly_chart(fig)
     
