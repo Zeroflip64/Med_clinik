@@ -14,21 +14,15 @@ from datetime import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import MinMaxScaler,OrdinalEncoder,StandardScaler,OneHotEncoder,LabelEncoder
+from sklearn.preprocessing import MinMaxScaler,OrdinalEncoder,StandardScaler,OneHotEncoder
 from sklearn.compose import make_column_transformer,ColumnTransformer
 import plotly.graph_objects as go
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split,RandomizedSearchCV
-from imblearn.over_sampling import SMOTE
-from imblearn.combine import SMOTETomek,SMOTEENN
 from imblearn.under_sampling import EditedNearestNeighbours
 from sklearn.metrics import f1_score,roc_auc_score,precision_score,accuracy_score,confusion_matrix
-from sklearn.linear_model import LogisticRegression
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout,BatchNormalization,Flatten
-from tensorflow.keras.optimizers import Adam,SGD
-from keras.wrappers.scikit_learn import KerasClassifier
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import Dense, Dropout,BatchNormalization
+from tensorflow.keras.optimizers import Adam
+
 import streamlit as st
 
 #Model
