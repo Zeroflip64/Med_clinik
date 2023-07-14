@@ -343,7 +343,7 @@ if st.session_state.get('show_analytics'):
     
 
     @st.cache_data()
-    def get_pca_data():
+    def plot_3d_graph():
         df = pd.read_csv('df.csv',index_col=0)
         target=df['No-show']
         features=df.drop(['No-show','ScheduledDay','AppointmentDay'],axis=1)
@@ -394,10 +394,10 @@ if st.session_state.get('show_analytics'):
         # Отображение графика в Streamlit
         st.plotly_chart(fig)
 
-if st.button('Построить 3D график', key='plot_button'):
-    st.session_state.plot_3d_graph = True
-if st.session_state.get('plot_3d_graph'):
-    plot_3d_graph()
+    if st.button('Построить 3D график', key='plot_button'):
+        st.session_state.plot_3d_graph = True
+    if st.session_state.get('plot_3d_graph'):
+        plot_3d_graph()
 
     st.markdown("## Вывод")
     st.markdown("После сокращения размера нашего данных с использованием метода **Главных компонент** мы обнаружили **8 четко определенных групп**. Эти группы представляют собой ценную информацию, которую мы можем использовать для определения внутренних зависимостей и разработки специфических предложений. Такой подход позволит нам улучшить понимание наших клиентов и принимать меры, которые приведут к положительным результатам и увеличению прибыли.")
