@@ -1,0 +1,10 @@
+pandas
+numpy
+python-dateutil
+seaborn
+matplotlib
+scikit-learn
+plotly
+imbalanced-learn
+tensorflow
+Keras
