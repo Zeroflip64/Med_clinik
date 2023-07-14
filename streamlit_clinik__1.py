@@ -355,7 +355,7 @@ if st.button('Показать аналитику по данным', key='analy
         features_pca['target']=target.reset_index(drop=True)
         return features_pca
 
-    if st.checkbox('Показать 3D график'):
+if st.checkbox('Показать 3D график'):
         features_pca=get_pca_data()
         data = [
             go.Scatter3d(
