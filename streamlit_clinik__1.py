@@ -95,15 +95,15 @@ model.load_weights('my_model_weights.h5')
 
 # Нажатие кнопки для формирования датафрейма
 if st.button('Записать пациента'):
-    names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
-    data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
+    names = ['Gender', 'Age', 'ScheduledDay', 'AppointmentDay', 'Neighbourhood', 'Scholarship', 'Hipertension & Diabetes', 'Handcap', 'SMS_received', 'first_come']
+    data = pd.DataFrame(dict(zip(names, [gender_pacient, age, today, come, adress, stolalrship, hronical, Handcap, sms, first_time])), index=[0])
     data = ready_data(data)
     preprocessor = prepocessor(data)
     data_transformed = preprocessor.transform(data)
     predictions = model.predict(data_transformed)
     prediction = predictions[0][0]
-    rounded_prediction = np.round(prediction, 4)
-    st.write(f'Вероятность посещения пациента - {rounded_prediction*100} %')
+    rounded_prediction = round(prediction * 100, 2)
+    st.write(f'Вероятность посещения пациента - {rounded_prediction} %')
 
 
 if st.button('Показать аналитику по данным'):
