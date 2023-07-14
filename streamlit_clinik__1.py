@@ -79,7 +79,7 @@ def prepocessor(data):
     return preprocessor 
 
 # модель
-st.write(data)
+
 model = Sequential()
 opt = Adam(learning_rate=0.001)
 model.add(Dense(128, input_dim=12, activation='relu'))
