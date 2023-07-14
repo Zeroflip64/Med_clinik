@@ -83,6 +83,7 @@ def prepocessor(data):
         ('ord', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), ['Day_scheduled','Neighbourhood', 'Day_Appointment', 'Hours_Scheduled'])
     ],
         remainder='passthrough')
+    st.write(df.head())
     df=pd.read_csv('df.csv')
     target=df['No-show']
     features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
