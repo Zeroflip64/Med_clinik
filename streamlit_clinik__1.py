@@ -63,7 +63,8 @@ st.write('''
 df=pd.read_csv('df.csv',index_col=0)
 
 st.subheader('Пожалуйста введите данные о записи')
-st.write('Важно учтите формат ввода данных')
+st.text('Важно учтите формат ввода данных')
+
 gender_pacient=st.selectbox('Выберите пол',['М','Ж'])
 age=st.number_input('Возраст', step=1, format="%i")
 today=st.text_input('Дата обращения (формат : Год-месяц-день-Часы:Минуты:Секунды)')
