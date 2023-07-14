@@ -62,15 +62,6 @@ def ready_data(data):
 
     return data
     
-# Нажатие кнопки для формирования датафрейма
-if st.button('Сформировать датафрейм'):
-    names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
-    data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
-    data = ready_data(data)
-    
-
-
-
 @st.cache_data()
 def prepocessor(data):
     
@@ -85,13 +76,7 @@ def prepocessor(data):
     target=df['No-show']
     features=df.drop(['No-show','ScheduledDay','AppointmentDay','Alcoholism'],axis=1)
     preprocessor.fit(features)
-    return preprocessor
-
-
-preprocessor = prepocessor(data)
-data_transformed = preprocessor.transform(data)
-#spd.DataFrame(data_transformed,columns=data.columns)
-
+    return preprocessor 
 
 # модель
 st.write(data)
@@ -108,8 +93,28 @@ weights = {0: 1., 1: 4.}
 
 model.load_weights('my_model_weights.h5')
 
-predictions = model.predict(data_transformed)
-st.write(f'Вероятность посещения пациента - {np.round(predictions,2)} %')
+# Нажатие кнопки для формирования датафрейма
+if st.button('Записать ациента'):
+    names=['Gender','Age','ScheduledDay','AppointmentDay','Neighbourhood','Scholarship','Hipertension & Diabetes','Handcap','SMS_received','first_come']
+    data=pd.DataFrame(dict(zip(names,[gender_pacient,age,today,come,adress,stolalrship,hronical,Handcap,sms,first_time])), index=[0])
+    data = ready_data(data)
+    preprocessor = prepocessor(data)
+    data_transformed = preprocessor.transform(data)
+    predictions = model.predict(data_transformed)
+    prediction = predictions[0][0]
+    st.write(f'Вероятность посещения пациента - {np.round(predictions,2)} %')
+
+
+
+
+
+
+
+
+
+
+
+
 
 st.header('Часть 2')
 st.subheader('Аналитика по данным по которым проходило обучение и выявление клиента который более склонен не посещать запись')
