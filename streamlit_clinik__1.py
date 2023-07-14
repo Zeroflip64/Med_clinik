@@ -80,7 +80,7 @@ def ready_data(data):
 
 
 data = ready_data(data)
-st.write(data)
+st.write(data.info())
 data=preprocessor.fit_transform(data)
 # модель
 st.write(data)
