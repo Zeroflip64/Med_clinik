@@ -26,13 +26,13 @@ import joblib
 import streamlit as st
 
 
-
+df=pd.read_csv('df.csv',index_col=0)
 
 gender_pacient=st.selectbox('Выберите число',['М','Ж'])
 age=st.number_input('Возраст', step=1, format="%i")
 today=st.text_input('Дата обращения (формат : Год-месяц-день-Часы:Минуты:Секунды)')
 come=st.text_input('Дата аписи (формат : Год-месяц-день)')
-adress=st.text_input('Улица проживания пациента')
+adress=st.selectbox('Выберите район проживания пациента',[i for i in df['Neighbourhood'])
 stolalrship=st.selectbox('У пациента есть мед страховка ',['Да' , 'Нет'])
 hronical=st.selectbox('У пациента есть хроничекие заболевания',['Да' , 'Нет'])
 Handcap=st.selectbox('Есть ли инвалидность и если есть то какая группа, если нету указать 0',[0,1,2,3,4])
@@ -68,7 +68,7 @@ if st.button('Сформировать датафрейм'):
     data = ready_data(data)
     
 
-df=pd.read_csv('df.csv',index_col=0)
+
 
 @st.cache_data()
 def prepocessor(data):
@@ -131,7 +131,7 @@ plt.xlabel('Количество дней');
 st.write('Построим матрицу кореляции для признаков наших данных')
 st.text('Чем ближе к -1 то образная кореляция и ели ближе к +1 то положительная кореляция признаков')
 plt.figure(figsize=(16,10))
-sns.heatmap(df.corr(),annot=True)
+sns.heatmap(df[i for i in df.columns if i not in ['AppointmentDay','ScheduledDay']].corr(),annot=True)
 plt.title('Матрица кореляции признаков')
 st.pyplot()
 
