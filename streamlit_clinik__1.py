@@ -162,6 +162,8 @@ output_text = {
 
 }
 
+plot_check = {}
+
 for i in [i for i in df.columns if i not in columns_to_exclude]:
     pivot = df.pivot_table(index=i, columns='No-show', values='AppointmentDay', aggfunc='count')
 
@@ -183,9 +185,11 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
         st.pyplot(fig)
         
     with col2:
-        st.write(f"График: {i}")
-        # Write the output text for this plot
-        st.write(f"Вывод: {output_text.get(i, '')}")
+        if plot_check.get(i, False) == False:
+            st.write(f"График: {i}")
+            # Write the output text for this plot
+            st.write(f"Вывод: {output_text.get(i, '')}")
+            plot_check[i] = True
 
     bad = []
     for j in range(len(pivot)):
@@ -198,16 +202,16 @@ for i in [i for i in df.columns if i not in columns_to_exclude]:
         with col1:
             st.pyplot(fig)
         with col2:
-            st.write(f"График: {i} - категории с большим числом отказов")
-            # Write the output text for this plot
-            st.write(f"Вывод: {output_text.get(i, '')}")
+            if plot_check.get(i + '2.1', False) == False:
+                st.write(f"График: {i} - 2.1")
+                # Write the output text for this plot
+                st.write(f"Вывод: {output_text.get(i, '')}")
+                plot_check[i + '2.1'] = True
     elif len(bad) == 1:
         with col2:
             st.write(f'В признаке {i} чаще отказываются в категории {bad}')
             # Write the output text for this plot
             st.write(f"Вывод: {output_text.get(i, '')}")
-
-
 
 
 df['day_of_Scheduled'] = df['ScheduledDay'].dt.strftime("%j")
